@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Simpanan as SimpananModel;
 use Illuminate\Http\Request;
 
 class Simpanan extends Controller
@@ -15,7 +16,8 @@ class Simpanan extends Controller
      */
     public function index()
     {
-        return $this->view('index');
+        $simpanan = SimpananModel::all();
+        return $this->view('index', ['simpanan' => $simpanan]);
     }
 
     /**
@@ -36,7 +38,8 @@ class Simpanan extends Controller
      */
     public function store(Request $request)
     {
-        //
+        SimpananModel::create($request->all());
+        return redirect('/simpanan');
     }
 
     /**
@@ -45,9 +48,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(SimpananModel $simpanan)
     {
-        return $this->view('show');
+        return $this->view('show', ['simpanan', $simpanan]);
     }
 
     /**
@@ -56,9 +59,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(SimpananModel $simpanan)
     {
-        return $this->view('index');
+        return $this->view('edit', ['simpanan' => $simpanan]);
     }
 
     /**
@@ -68,9 +71,10 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, SimpananModel $simpanan)
     {
-        //
+        $simpanan->update($request->all());
+        return redirect('/simpanan');
     }
 
     /**
@@ -79,8 +83,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SimpananModel $simpanan)
     {
-        //
+        $simpanan->delete();
+        return redirect('/simpanan');
     }
 }

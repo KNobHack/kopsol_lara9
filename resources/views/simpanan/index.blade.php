@@ -22,6 +22,7 @@
 		</thead>
 		<tbody>
 			<?php $no_urut = 1; ?>
+
 			<tr>
 				<td><?= $no_urut++ ?></td>
 				<td></td>
