@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Simpanan;
 use Illuminate\Support\Facades\Route;
 
@@ -14,5 +15,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/dashboard', [Dashboard::class, 'index']);
 
 Route::resource('simpanan', Simpanan::class);
