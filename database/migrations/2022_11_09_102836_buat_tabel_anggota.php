@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('anggota', function (Blueprint $table) {
-            $table->id('id');
+            $table->id();
             $table->foreignId('user_id');
             $table->string('nik', 16)->unique();
             $table->string('nama');
