@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class Simpanan extends Model
+class Penarikan extends Model
 {
     // use HasFactory;
-    protected $table = 'simpanan';
+
+    protected $table = 'penarikan';
 
     protected $fillable = [
         'anggota_id',
         'transaksi_id',
         'jenis',
         'nominal',
-        'status',
     ];
 
     // Relations

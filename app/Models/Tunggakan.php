@@ -6,24 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class Simpanan extends Model
+class Tunggakan extends Model
 {
     // use HasFactory;
-    protected $table = 'simpanan';
+
+    protected $table = 'tunggakan';
 
     protected $fillable = [
         'anggota_id',
-        'transaksi_id',
-        'jenis',
+        'nama_tunggakan',
         'nominal',
+        'keterangan',
         'status',
+        'tertunggak_id',
+        'tertunggak_type'
     ];
 
-    // Relations
-
-    public function transaksi(): Relation
+    public function tertunggak()
     {
-        return $this->belongsTo(Transaksi::class, 'transaksi_id', 'id');
+        return $this->morphTo('tertunggak');
     }
 
     public function anggota(): Relation
