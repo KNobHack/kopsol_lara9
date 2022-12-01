@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('tunggakan', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('anggota_id');
             $table->string('nama_tunggakan');
             $table->decimal('nominal', 18, 2);
             $table->text('keterangan');
@@ -24,6 +25,8 @@ return new class extends Migration
             $table->string('tertunggak_type');
 
             $table->timestamps();
+
+            $table->foreign('anggota_id')->on('anggota')->references('id');
         });
     }
 
