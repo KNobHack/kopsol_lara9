@@ -43,7 +43,7 @@
                 @csrf
                 <div class="form-group">
                   <input type="email" name="email" class="form-control form-control-user" id="email"
-                    aria-describedby="emailHelp" placeholder="Masukkan Email...">
+                    aria-describedby="emailHelp" placeholder="Masukkan Email..." value="{{ old('email') }}">
                   @error('email')
                     <small class="pl-3 text-sm text-danger">{{ $message }}</small>
                   @enderror

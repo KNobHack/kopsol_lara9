@@ -31,11 +31,19 @@
                 @endforeach
               @endisset
 
+              @if (session('status'))
+                <div class="card bg-success text-white shadow my-4">
+                  <div class="card-body py-3">
+                    {{ session('status') }}
+                  </div>
+                </div>
+              @endif
+
               <form class="user" method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
                   <input type="email" name="email" class="form-control form-control-user" id="email"
-                    aria-describedby="emailHelp" placeholder="Masukkan Email...">
+                    aria-describedby="emailHelp" placeholder="Masukkan Email..." value="{{ old('email') }}">
                   @error('email')
                     <small class="pl-3 text-sm text-danger">{{ $message }}</small>
                   @enderror

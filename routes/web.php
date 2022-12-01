@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth;
+use App\Http\Controllers\Anggota;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Simpanan;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', [Dashboard::class, 'index']);
+Route::get('/', function () {
+	return redirect('/dashboard');
+});
 
+Route::get('/dashboard', [Dashboard::class, 'index'])->middleware('auth');;
+
+Route::resource('anggota', Anggota::class);
 Route::resource('simpanan', Simpanan::class);

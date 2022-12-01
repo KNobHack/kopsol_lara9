@@ -9,10 +9,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    // use HasApiTokens, Notifiable;
-    use MustVerifyEmail, HasFactory;
+    // use HasApiTokens, HasFactory;
+    use Notifiable;
+
+    const DefaultRoleId = '1'; // admin
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +22,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'role_id',
         'email',
         'password',
     ];
