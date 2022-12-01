@@ -31,7 +31,7 @@
     <div id="collapseMenuAnggota" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header">Custom Components:</h6> --}}
-        <a class="collapse-item" href="buttons.html">Data anggota</a>
+        <a class="collapse-item" href="{{ route('anggota.index') }}">Data anggota</a>
         <a class="collapse-item" href="buttons.html">Anggota Baru</a>
         {{-- <a class="collapse-item" href="cards.html">Cards</a> --}}
       </div>
@@ -48,7 +48,7 @@
     <div id="collapseMenuTrabsaksi" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header">Custom Components:</h6> --}}
-        <a class="collapse-item" href="buttons.html">Simpanan</a>
+        <a class="collapse-item" href="{{ route('simpanan.index') }}">Simpanan</a>
         <a class="collapse-item" href="buttons.html">Pinjaman</a>
         <a class="collapse-item" href="buttons.html">Penarikan</a>
         <a class="collapse-item" href="buttons.html">Angsuran</a>

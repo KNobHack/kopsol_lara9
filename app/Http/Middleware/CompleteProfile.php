@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompleteProfile
 {
@@ -16,11 +17,9 @@ class CompleteProfile
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
-
         if (
-            $this->hasAnggotaField($user) &&
-            $this->isFilled($user)
+            $this->doesNotHaveAnggota() ||
+            $this->notFilled()
         ) {
             return redirect(route('profile.edit'));
         }
@@ -28,12 +27,12 @@ class CompleteProfile
         return $next($request);
     }
 
-    protected function hasAnggotaField($user): bool
+    protected function doesNotHaveAnggota(): bool
     {
-        return $user->anggota !== null;
+        return Auth::user()->anggota !== null;
     }
 
-    protected function isFilled($user): bool
+    protected function notFilled(): bool
     {
         return true;
     }
