@@ -12,6 +12,9 @@
 
     <div class="row">
       <div class="col-md-5 col-lg-4">
+
+        @include('devutility.alert')
+
         <div class="card">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Photo Profile</h6>
@@ -34,7 +37,7 @@
                 <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                <a href="{{ route('profile.edit') }}" class="dropdown-item">Edit profil</a>
+                <a href="{{ $edit_href ?? route('profile.edit') }}" class="dropdown-item">Edit profil</a>
               </div>
             </div>
           </div>

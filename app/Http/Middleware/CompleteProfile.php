@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CompleteProfile
 {
@@ -17,26 +16,13 @@ class CompleteProfile
      */
     public function handle(Request $request, Closure $next)
     {
-        if (
-            $this->doesNotHaveAnggota() ||
-            $this->notFilled()
-        ) {
+        if (!$request->user()->profileComplete()) {
             return redirect(route('profile.edit'))
                 ->with('alert', [
-                    'danger' => 'Anda harus mengisi profil terlebih dahulu'
+                    ['mode' => 'danger', 'message' => 'Anda harus melengkapi profil terlebih dahulu'],
                 ]);
         }
 
         return $next($request);
-    }
-
-    protected function doesNotHaveAnggota(): bool
-    {
-        return Auth::user()->anggota === null;
-    }
-
-    protected function notFilled(): bool
-    {
-        return false;
     }
 }

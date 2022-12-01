@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Anggota as AnggotaModel;
-use App\Models\User as UserModel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class Profile extends Controller
@@ -17,11 +15,23 @@ class Profile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(?UserModel $user)
+    public function show()
     {
-        $user = ($user->exists) ? $user : Auth::user();
+        return view('profile.show', ['anggota' => Auth::user()->anggota]);
+    }
 
-        return view('profile.show', ['anggota' => $user->anggota]);
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showSpecific(AnggotaModel $anggota)
+    {
+        return view('profile.show', [
+            'anggota' => $anggota,
+            'edit_href' => route('profile.edit.specific', $anggota->id)
+        ]);
     }
 
     /**
@@ -30,11 +40,23 @@ class Profile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(?UserModel $user)
+    public function edit()
     {
-        $user = ($user->exists) ? $user : Auth::user();
+        return view('profile.edit', ['anggota' => Auth::user()->anggota]);
+    }
 
-        return view('profile.edit', ['anggota' => $user->anggota]);
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editSpecific(AnggotaModel $anggota)
+    {
+        return view('profile.edit', [
+            'anggota' => $anggota,
+            'form_action' => route('profile.specific', $anggota->id)
+        ]);
     }
 
     /**
@@ -44,14 +66,34 @@ class Profile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProfileRequest $request, ?UserModel $user)
+    public function update(UpdateProfileRequest $request)
     {
-        $user = ($user->exists) ? $user : Auth::user();
+        $data = ['user_id' => Auth::id(), ...$request->validated()];
 
-        $data = ['user_id' => $user->getAuthIdentifier(), ...$request->validated()];
+        AnggotaModel::updateOrCreate(['user_id' => Auth::id()], $data);
 
-        AnggotaModel::updateOrCreate(['user_id' => $user->getAuthIdentifier()], $data);
+        return redirect()->route('profile')
+            ->with('alert', [
+                ['mode' => 'success', 'message' => 'Perubahan profile berhasil disimpan'],
+            ]);
+    }
 
-        return redirect()->route('profile');
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSpecific(UpdateProfileRequest $request, AnggotaModel $anggota)
+    {
+        $data = ['user_id' => $anggota->user_id, ...$request->validated()];
+
+        AnggotaModel::updateOrCreate(['user_id' => $anggota->user_id], $data);
+
+        return redirect()->route('profile.specific', $anggota->id)
+            ->with('alert', [
+                ['mode' => 'success', 'message' => 'Perubahan profile berhasil disimpan'],
+            ]);
     }
 }

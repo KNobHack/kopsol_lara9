@@ -14,7 +14,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // use HasApiTokens, HasFactory;
     use Notifiable;
 
-    const DefaultRoleId = '1'; // admin
+    const DefaultRoleId = '1'; // admin @todo should be changed
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +45,16 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Functions
+
+    /**
+     * Apakah user sudah mengisi data dirinya?
+     */
+    public function profileComplete(): bool
+    {
+        return $this->anggota !== null;
+    }
 
     // Relations
 

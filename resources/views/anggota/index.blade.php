@@ -19,6 +19,8 @@
           class="fas fa-plus fa-sm text-white-50"></i> Tambah Anggota Baru</a>
     </div>
 
+    @include('devutility.alert')
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
@@ -44,7 +46,7 @@
                   <td>{{ $agt->jenis_kelamin }}</td>
                   <td>{{ $agt->nomor_telpon }}</td>
                   <td>
-                    <a href="{{ route('profile.detail', $agt->id) }}" class="btn btn-sm btn-info">Detail</a>
+                    <a href="{{ route('profile.specific', $agt->id) }}" class="btn btn-sm btn-info">Detail</a>
                   </td>
                 </tr>
               @endforeach

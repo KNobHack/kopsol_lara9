@@ -12,6 +12,9 @@
 
     <div class="row">
       <div class="col-md-5 col-lg-4">
+
+        @include('devutility.alert')
+
         <div class="card">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Photo Profile</h6>
@@ -19,9 +22,11 @@
           <div class="card-body">
             <img src="{{ url('assets/img/undraw_profile.svg') }}" alt="" class="img-profile rounded-circle">
           </div>
-          <div class="card-footer">
-            <a href="#" class="btn btn-block btn-success">Ganti Foto</a>
-          </div>
+          @if (Auth::user()->profileComplete())
+            <div class="card-footer">
+              <a href="#" class="btn btn-block btn-success">Ganti Foto</a>
+            </div>
+          @endif
         </div>
       </div>
       <div class="col-md-7 col-lg-8">
@@ -29,7 +34,7 @@
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Update Profile</h6>
           </div>
-          <form action="{{ route('profile') }}" method="POST">
+          <form action="{{ $form_action ?? route('profile') }}" method="POST">
             <div class="card-body">
               @csrf
               @method('PUT')
@@ -123,7 +128,9 @@
               </div>
             </div>
             <div class="card-footer py-3 d-flex flex-row align-items-center justify-content-between">
-              <a href="{{ route('profile') }}" class="btn btn-secondary">Batal</a>
+              @if (Auth::user()->profileComplete())
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">Batal</a>
+              @endif
               <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
           </form>
