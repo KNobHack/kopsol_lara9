@@ -21,7 +21,10 @@ class CompleteProfile
             $this->doesNotHaveAnggota() ||
             $this->notFilled()
         ) {
-            return redirect(route('profile.edit'));
+            return redirect(route('profile.edit'))
+                ->with('alert', [
+                    'danger' => 'Anda harus mengisi profil terlebih dahulu'
+                ]);
         }
 
         return $next($request);
@@ -29,11 +32,11 @@ class CompleteProfile
 
     protected function doesNotHaveAnggota(): bool
     {
-        return Auth::user()->anggota !== null;
+        return Auth::user()->anggota === null;
     }
 
     protected function notFilled(): bool
     {
-        return true;
+        return false;
     }
 }

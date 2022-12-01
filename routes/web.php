@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 		Route::get('/dashboard', [Dashboard::class, 'index']);
 
 		// profil dirinya sendiri
-		Route::get('/profile', [Profile::class, 'index'])->name('profile');
+		Route::get('/profile', [Profile::class, 'show'])->name('profile');
 
 		Route::get('/profile/{user}', [Profile::class, 'show'])->name('profile.detail');
 		Route::put('/profile/{user}/edit', [Profile::class, 'update']);

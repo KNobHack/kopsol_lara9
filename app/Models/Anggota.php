@@ -15,14 +15,14 @@ class Anggota extends Model
     protected $fillable = [
         'user_id',
         'nik',
-        'nama',
+        'nama_lengkap',
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
         'agama',
         'pekerjaan',
         'alamat',
-        'no_telpon',
+        'nomor_telpon',
     ];
 
     // Relations

@@ -17,9 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('nik', 16)->unique();
-            $table->string('nama');
+            $table->string('nama_lengkap');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
+            $table->enum('jenis_kelamin', ['L', 'P']);
             $table->enum('agama', [
                 'Islam', 'Kristen', 'Katholik',
                 'Hindu', 'Budha', 'Konghucu'
