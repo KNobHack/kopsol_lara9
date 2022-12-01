@@ -28,13 +28,13 @@ Route::middleware('auth')->group(function () {
 			return redirect('/dashboard');
 		});
 
-		Route::get('/dashboard', [Dashboard::class, 'index']);
+		Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard');
 
 		// profil dirinya sendiri
 		Route::get('/profile', [Profile::class, 'show'])->name('profile');
 
 		Route::get('/profile/{user}', [Profile::class, 'show'])->name('profile.detail');
-		Route::put('/profile/{user}/edit', [Profile::class, 'update']);
+		Route::put('/profile/{user}/edit', [Profile::class, 'update'])->name('profile.edit.detail');
 
 		Route::resource('anggota', Anggota::class);
 
