@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('pekerjaan');
             $table->text('alamat');
             $table->string('nomor_telpon', 15)->unique();
+            $table->timestamps();
 
             $table->foreign('user_id')->on('users')->references('id');
         });

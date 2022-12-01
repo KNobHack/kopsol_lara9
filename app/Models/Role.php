@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class Role extends Model
 {
-    // use HasFactory;
+    use HasFactory;
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     protected $fillable = [
         'role'
