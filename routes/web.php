@@ -4,6 +4,7 @@ use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,5 +44,9 @@ Route::middleware('auth')->group(function () {
 		Route::get('/simpanan-pokok', [SimpananController::class, 'simpananPokok'])->name('simpanan.pokok');
 		Route::get('/simpanan-wajib', [SimpananController::class, 'simpananWajib'])->name('simpanan.wajib');
 		Route::get('/simpanan-sukarela', [SimpananController::class, 'simpananSukarela'])->name('simpanan.sukarela');
+
+		Route::resource('transaksi', TransaksiController::class);
+		Route::get('/transaksi/create/anggota/{anggota}', [TransaksiController::class, 'create'])->name('transaksi.create.for.anggota');
+		Route::get('/transaksi/create/non-anggota/{nonanggota}', [TransaksiController::class, 'create'])->name('transaksi.create.for.nonanggota');
 	});
 });

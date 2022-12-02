@@ -37,11 +37,18 @@
     </div>
   </li>
 
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item active">
+    <a class="nav-link" href="{{ route('merchant') }}">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Merchant</span></a>
+  </li>
+
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenuSimpanan"
       aria-expanded="true" aria-controls="collapseMenuSimpanan">
-      <i class="fas fa-fw fa-list"></i>
+      <i class="fas fa-fw fa-wallet"></i>
       <span>Simpanan</span>
     </a>
     <div id="collapseMenuSimpanan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -57,14 +64,14 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenuTrabsaksi"
       aria-expanded="true" aria-controls="collapseMenuTrabsaksi">
-      <i class="fas fa-fw fa-list"></i>
+      <i class="fas fa-fw fa-money-check-alt"></i>
       <span>Transaksi</span>
     </a>
     <div id="collapseMenuTrabsaksi" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         {{-- <h6 class="collapse-header">Simpanan</h6> --}}
         {{-- <a class="collapse-item" href="buttons.html">Pinjaman</a> --}}
-        <a class="collapse-item" href="buttons.html">Transaksi</a>
+        <a class="collapse-item" href="{{ route('transaksi.index') }}">Transaksi</a>
         <a class="collapse-item" href="buttons.html">Penarikan</a>
         <a class="collapse-item" href="buttons.html">Tunggakan</a>
         {{-- <a class="collapse-item" href="buttons.html">Angsuran</a> --}}

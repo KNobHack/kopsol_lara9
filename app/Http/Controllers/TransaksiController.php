@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Simpanan;
+use App\Models\Anggota;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
-class SimpananController extends Controller
+class TransaksiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,13 +15,8 @@ class SimpananController extends Controller
      */
     public function index()
     {
-        $simpanan = Simpanan::with('anggota')->get();
-        return view('simpanan.index', ['simpanan' => $simpanan]);
-    }
-
-    public function simpananPokok()
-    {
-        # code...
+        $transaksi = Transaksi::with('anggota')->get();
+        return view('transaksi.index', ['transaksi' => $transaksi]);
     }
 
     /**
@@ -28,9 +24,15 @@ class SimpananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(?Anggota $anggota)
     {
-        return view('simpanan.create');
+        $daftar_anggota = Anggota::all();
+        $daftar_tagihan = [];
+        return view('transaksi.create', [
+            'daftar_anggota' => $daftar_anggota,
+            'daftar_tagihan' => $daftar_tagihan,
+            'anggota' => $anggota // anggota yang akan transaksi
+        ]);
     }
 
     /**
@@ -41,8 +43,7 @@ class SimpananController extends Controller
      */
     public function store(Request $request)
     {
-        Simpanan::create($request->all());
-        return redirect('/simpanan');
+        //
     }
 
     /**
@@ -51,9 +52,9 @@ class SimpananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Simpanan $simpanan)
+    public function show($id)
     {
-        return view('simpanan.show', ['simpanan', $simpanan]);
+        //
     }
 
     /**
@@ -62,9 +63,9 @@ class SimpananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Simpanan $simpanan)
+    public function edit($id)
     {
-        return view('simpanan.edit', ['simpanan' => $simpanan]);
+        //
     }
 
     /**
@@ -74,10 +75,9 @@ class SimpananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Simpanan $simpanan)
+    public function update(Request $request, $id)
     {
-        $simpanan->update($request->all());
-        return redirect('/simpanan');
+        //
     }
 
     /**
@@ -86,9 +86,8 @@ class SimpananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Simpanan $simpanan)
+    public function destroy($id)
     {
-        $simpanan->delete();
-        return redirect('/simpanan');
+        //
     }
 }
