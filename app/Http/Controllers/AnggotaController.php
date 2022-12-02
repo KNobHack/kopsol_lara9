@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Simpanan as SimpananModel;
+use App\Models\Anggota as AnggotaModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class Simpanan extends Controller
+class AnggotaController extends Controller
 {
-    protected $viewFolder = 'simpanan';
-
     /**
      * Display a listing of the resource.
      *
@@ -16,8 +15,9 @@ class Simpanan extends Controller
      */
     public function index()
     {
-        $simpanan = SimpananModel::all();
-        return $this->view('index', ['simpanan' => $simpanan]);
+        $anggota = AnggotaModel::all();
+
+        return view('anggota.index', ['anggota' => $anggota]);
     }
 
     /**
@@ -27,7 +27,7 @@ class Simpanan extends Controller
      */
     public function create()
     {
-        return $this->view('create');
+        //
     }
 
     /**
@@ -38,8 +38,7 @@ class Simpanan extends Controller
      */
     public function store(Request $request)
     {
-        SimpananModel::create($request->all());
-        return redirect('/simpanan');
+        //
     }
 
     /**
@@ -48,9 +47,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(SimpananModel $simpanan)
+    public function show($id)
     {
-        return $this->view('show', ['simpanan', $simpanan]);
+        //
     }
 
     /**
@@ -59,9 +58,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(SimpananModel $simpanan)
+    public function edit($id)
     {
-        return $this->view('edit', ['simpanan' => $simpanan]);
+        //
     }
 
     /**
@@ -71,10 +70,9 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SimpananModel $simpanan)
+    public function update(Request $request, $id)
     {
-        $simpanan->update($request->all());
-        return redirect('/simpanan');
+        //
     }
 
     /**
@@ -83,9 +81,8 @@ class Simpanan extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SimpananModel $simpanan)
+    public function destroy($id)
     {
-        $simpanan->delete();
-        return redirect('/simpanan');
+        //
     }
 }

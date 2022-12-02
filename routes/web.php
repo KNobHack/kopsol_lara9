@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Anggota;
-use App\Http\Controllers\Dashboard;
-use App\Http\Controllers\Profile;
-use App\Http\Controllers\Simpanan;
+use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SimpananController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,25 +20,28 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
 
 	// Harus isi dulu profil
-	Route::get('/profile/edit', [Profile::class, 'edit'])->name('profile.edit');
-	Route::put('/profile', [Profile::class, 'update']);
+	Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+	Route::put('/profile', [ProfileController::class, 'update']);
 
 	Route::middleware('complete.profile')->group(function () {
 		Route::get('/', function () {
 			return redirect('/dashboard');
 		});
 
-		Route::get('/profile/{anggota}', [Profile::class, 'showSpecific'])->name('profile.specific');
-		Route::get('/profile/{anggota}/edit', [Profile::class, 'editSpecific'])->name('profile.edit.specific');
-		Route::put('/profile/{anggota}', [Profile::class, 'updateSpecific']);
+		Route::get('/profile/{anggota}', [ProfileController::class, 'showSpecific'])->name('profile.specific');
+		Route::get('/profile/{anggota}/edit', [ProfileController::class, 'editSpecific'])->name('profile.edit.specific');
+		Route::put('/profile/{anggota}', [ProfileController::class, 'updateSpecific']);
 
-		Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard');
+		Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 		// profil dirinya sendiri
-		Route::get('/profile', [Profile::class, 'show'])->name('profile');
+		Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
-		Route::resource('anggota', Anggota::class);
+		Route::resource('anggota', AnggotaController::class);
 
-		Route::resource('simpanan', Simpanan::class);
+		Route::resource('simpanan', SimpananController::class);
+		Route::get('/simpanan-pokok', [SimpananController::class, 'simpananPokok'])->name('simpanan.pokok');
+		Route::get('/simpanan-wajib', [SimpananController::class, 'simpananWajib'])->name('simpanan.wajib');
+		Route::get('/simpanan-sukarela', [SimpananController::class, 'simpananSukarela'])->name('simpanan.sukarela');
 	});
 });

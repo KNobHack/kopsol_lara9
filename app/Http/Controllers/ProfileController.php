@@ -6,7 +6,7 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Anggota as AnggotaModel;
 use Illuminate\Support\Facades\Auth;
 
-class Profile extends Controller
+class ProfileController extends Controller
 {
 
     /**
