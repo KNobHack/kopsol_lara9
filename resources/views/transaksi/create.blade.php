@@ -32,17 +32,32 @@
           <span class="icon text-white-50">
             <i class="fas fa-search"></i>
           </span>
-          <span class="text">Pilih
-            anggota</span>
+          <span class="text">Anggota</span>
         </button>
+
+        <button type="button" class="btn btn-primary btn-icon-split btn-sm disabled">
+          <span class="icon text-white-50">
+            <i class="fas fa-search"></i>
+          </span>
+          <span class="text">Non-anggota</span>
+        </button>
+
+        <button type="button" class="btn btn-primary btn-icon-split btn-sm disabled">
+          <span class="icon text-white-50">
+            <i class="fas fa-mask"></i>
+          </span>
+          <span class="text">Anonim</span>
+        </button>
+
         <hr>
 
-        @if ($anggota->exists)
+        @if (isset($pelaku) && $pelaku->exists)
           <form>
             <div class="form-group row">
               <label for="" class="col-sm-2 col-form-label">Nama Lengkap</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control-plaintext" value="{{ $anggota->nama_lengkap }}" readonly>
+                <input type="text" class="form-control-plaintext" value="{{ $pelaku->nama_lengkap ?? $pelaku->nama }}"
+                  readonly>
               </div>
             </div>
           </form>
@@ -53,46 +68,52 @@
                   <th>No</th>
                   <th>Nama Transaksi</th>
                   <th>Keterangan</th>
-                  <th>Nominal</th>
+                  <th>Nominal satuan</th>
+                  <th>Jumlah</th>
+                  <th>Nominal total</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 @php $total = 0 @endphp
-                @foreach (session('draft_transaksi') ?? [] as $key => $transaksi)
+                @foreach ($draft_transaksi as $key => $transaksi)
                   <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $transaksi->nama }}</td>
-                    <td>{{ $transaksi->keterangan }}</td>
-                    <td>{{ $transaksi->nominal }}</td>
+                    <td>{{ $transaksi['nama'] }}</td>
+                    <td>{{ $transaksi['keterangan'] }}</td>
+                    <td>{{ $transaksi['nominal_satuan'] }}</td>
+                    <td>{{ $transaksi['jumlah'] }}</td>
+                    <td>{{ $transaksi['nominal_total'] }}</td>
                     <td>
                       <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                     </td>
                   </tr>
-                  @php $total += $nominal @endphp
+                  @php $total += $transaksi['nominal_total'] @endphp
                 @endforeach
                 <tr>
                   <td colspan="5">
-                    <button type="button" class="btn btn-success btn-sm disabled">
-                      <!-- data-toggle="modal" data-target="#modalTambahTransaksiMerchant"-->
-                      <i class="fas fa-plus"></i> Merchant
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                      data-target="#modalTambahTransaksiProduk">
+                      Beli Produk
                     </button>
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                      data-target="#modalTambahTransaksiTunggakan">
-                      <i class="fas fa-plus"></i> Tunggakan
-                    </button>
+                    @if (is_a($pelaku, App\Models\Anggota::class))
+                      <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                        data-target="#modalTambahTransaksiTunggakan">
+                        Bayar Tunggakan
+                      </button>
+                    @endif
                   </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <th colspan="2"></th>
-                  <th class="text-right"><strong>Total:</strong></th>
+                  <th colspan="4"></th>
+                  <th class="text-right"><strong>Total :</strong></th>
                   <th colspan="2">{{ $total }}</th>
                 </tr>
               </tfoot>
             </table>
-            <a href="#" class="btn btn-secondary">Simpan</a>
+            <a href="#" class="btn btn-secondary">Utang</a>
             <a href="#" class="btn btn-primary">Lunas</a>
           </div>
         @endif
@@ -151,103 +172,109 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="modalTambahTransaksiMerchant" data-backdrop="static" tabindex="-1"
-    aria-labelledby="modalTambahTransaksiMerchantLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTambahTransaksiMerchantLabel">Isi data transaksi</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{{ route('profile') }}" method="POST">
-          <div class="modal-body">
+  @if (isset($pelaku) && $pelaku->exists)
+    <!-- Modal -->
+    <div class="modal fade" id="modalTambahTransaksiProduk" data-backdrop="static" tabindex="-1"
+      aria-labelledby="modalTambahTransaksiProdukLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTambahTransaksiProdukLabel">Isi data transaksi</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{{ $form_action_add_produk }}" method="POST">
             @csrf
-            <div class="form-group">
-              <label for="">Nama Merchant</label>
-              <select name="merchant" id="" class="form-control">
-                @if (!old('merchant'))
-                  <option selected disabled>Pilih merchant</option>
-                @endif
-                <option value="1" @selected(old('merchant') == '1')>Keripik</option>
-              </select>
-              @error('merchant')
-                <small class="form-text text-danger">{{ $message }}</small>
-              @enderror
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="">Nama Produk</label>
+                <select name="produk_id" id="" class="form-control">
+                  @if (!old('produk_id'))
+                    <option selected disabled>Pilih merchant</option>
+                  @endif
+                  @foreach ($daftar_produk as $prodk)
+                    <option value="{{ $prodk->id }}" @selected(old('produk_id') == $prodk->id)>{{ $prodk->nama_produk }}</option>
+                  @endforeach
+                </select>
+                @error('produk_id')
+                  <small class="form-text
+      text-danger">{{ $message }}</small>
+                @enderror
+              </div>
+              <div class="form-group">
+                <label for="">Jumlah</label>
+                <input type="number" class="form-control" name="jumlah" value="{{ old('jumlah') }}">
+                @error('jumlah')
+                  <small class="form-text text-danger">{{ $message }}</small>
+                @enderror
+              </div>
+              <div class="form-group">
+                <label for="">Keterangan</label>
+                <input type="text" class="form-control" name="keterangan" value="{{ old('keterangan') }}"
+                  placeholder="Isi jika perlu">
+                @error('keterangan')
+                  <small class="form-text text-danger">{{ $message }}</small>
+                @enderror
+              </div>
             </div>
-            <div class="form-group">
-              <label for="">Jumlah</label>
-              <input type="number" class="form-control" name="jumlah" value="{{ old('jumlah') }}">
-              @error('jumlah')
-                <small class="form-text text-danger">{{ $message }}</small>
-              @enderror
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Tambah</button>
+              <a href="#" class="btn btn-secondary"
+                onclick="event.preventDefault();$('#modalTambahTransaksiProduk').modal('hide')">Batal</a>
             </div>
-            <div class="form-group">
-              <label for="">Keterangan</label>
-              <input type="text" class="form-control" name="keterangan" value="{{ old('keterangan') }}">
-              @error('keterangan')
-                <small class="form-text text-danger">{{ $message }}</small>
-              @enderror
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalTambahTransaksiTunggakan" data-backdrop="static" tabindex="-1"
+      aria-labelledby="modalTambahTransaksiTunggakanLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTambahTransaksiTunggakanLabel">Tambah Transaksi dari Tunggakan</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="tabel_tunggakan" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Tunggakan</th>
+                    <th>Nominal</th>
+                    <th>Keterangan</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($daftar_tagihan as $dft_tagihan)
+                    <tr>
+                      <td>{{ $loop->iteration }}</td>
+                      <td>{{ $dft_tagihan->nama_tunggakan }}</td>
+                      <td>{{ $dft_tagihan->nominal }}</td>
+                      <td>{{ $dft_tagihan->keterangan }}</td>
+                      <td>
+                        <a href="#" class="btn btn-sm btn-info">Pilih</a>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Tambah</button>
             <a href="#" class="btn btn-secondary"
-              onclick="event.preventDefault();$('#modalTambahTransaksiMerchant').modal('hide')">Batal</a>
+              onclick="event.preventDefault();$('#modalTambahTransaksiTunggakan').modal('hide')">Batal</a>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="modalTambahTransaksiTunggakan" data-backdrop="static" tabindex="-1"
-    aria-labelledby="modalTambahTransaksiTunggakanLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTambahTransaksiTunggakanLabel">Tambah Transaksi dari Tunggakan</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="tabel_tunggakan" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Nama Tunggakan</th>
-                  <th>Nominal</th>
-                  <th>Keterangan</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach ($daftar_tagihan as $dft_tagihan)
-                  <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $dft_tagihan->nama_tunggakan }}</td>
-                    <td>{{ $dft_tagihan->nominal }}</td>
-                    <td>{{ $dft_tagihan->keterangan }}</td>
-                    <td>
-                      <a href="#" class="btn btn-sm btn-info">Pilih</a>
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="btn btn-secondary"
-            onclick="event.preventDefault();$('#modalTambahTransaksiTunggakan').modal('hide')">Batal</a>
         </div>
       </div>
     </div>
-  </div>
+  @endif
 @endsection
 
 @section('script')

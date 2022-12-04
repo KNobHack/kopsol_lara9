@@ -96,6 +96,7 @@
 
   @yield('modals')
 
+
   <!-- Bootstrap core JavaScript-->
   <script src="{{ url('assets/vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -107,6 +108,8 @@
   <script src="{{ url('assets/js/sb-admin-2.min.js') }}"></script>
 
   @yield('script')
+
+  @include('devutility.modal_show')
 
   <!-- Page level plugins -->
   {{-- <script src="vendor/chart.js/Chart.min.js"></script> --}}

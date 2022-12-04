@@ -50,7 +50,10 @@ Route::middleware('auth')->group(function () {
 		Route::get('/simpanan-sukarela', [SimpananController::class, 'simpananSukarela'])->name('simpanan.sukarela');
 
 		Route::resource('transaksi', TransaksiController::class);
-		Route::get('/transaksi/create/anggota/{anggota}', [TransaksiController::class, 'createAnggota'])->name('transaksi.create.for.anggota');
+		Route::get('/transaksi/create/anggota/{anggota}', [TransaksiController::class, 'createAnggota'])
+			->name('transaksi.create.for.anggota');
+		Route::post('/transaksi/create/anggota/{anggota}/add/produk', [TransaksiController::class, 'anggotaAddProduk'])
+			->name('transaksi.create.for.anggota.add.produk');
 		Route::get('/transaksi/create/non-anggota/{nonanggota}', [TransaksiController::class, 'createNonAnggota'])->name('transaksi.create.for.nonanggota');
 	});
 });
