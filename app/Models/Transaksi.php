@@ -13,10 +13,18 @@ class Transaksi extends Model
     protected $table = 'Transaksi';
 
     protected $fillable = [
-        'anggota_id',
+        'pelayan_id',
+        'pelaku_id',
+        'pelaku_type',
         'nominal',
         'status',
         'keterangan'
+    ];
+
+    const STATUS = [
+        'lunas' => '1',
+        'utang' => '2',
+        // 'menunggu_pembayaran' => '3'
     ];
 
     // Relations

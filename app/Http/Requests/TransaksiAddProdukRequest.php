@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
 
 class TransaksiAddProdukRequest extends FormRequest
 {
@@ -43,8 +42,6 @@ class TransaksiAddProdukRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         session()->flash('modal_show', 'modalTambahTransaksiProduk');
-        throw (new ValidationException($validator))
-            ->errorBag($this->errorBag)
-            ->redirectTo($this->getRedirectUrl());
+        parent::failedValidation($validator);
     }
 }

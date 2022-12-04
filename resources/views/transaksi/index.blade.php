@@ -32,11 +32,11 @@
             <thead>
               <tr>
                 <th>No</th>
-                <th>ID Anggota</th>
                 <th>Nama</th>
                 <th>Nominal</th>
                 <th>Status</th>
                 <th>Keterangan</th>
+                <th>Yang melayani</th>
                 <th></th>
               </tr>
             </thead>
@@ -44,11 +44,11 @@
               @foreach ($transaksi as $trans)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  {{-- <td>{{ $trans->id_anggota }}</td> --}}
-                  <td>{{ $trans->anggota->nama_lengkap }}</td>
+                  <td>{{ $trans->pelaku->nama_lengkap }}</td>
                   <td>{{ $trans->nominal }}</td>
                   <td>{{ $trans->status }}</td>
                   <td>{{ $trans->keteragan }}</td>
+                  <td>{{ $trans->pelayan->nama_lengkap }}</td>
                   <td>
                     <a href="{{ route('transaksi.show', $trans->id) }}" class="btn btn-sm btn-info">Detail</a>
                   </td>

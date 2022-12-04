@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('pelaku_type')->nullable();
             $table->decimal('nominal', 18, 2);
             $table->tinyInteger('status');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
 
             $table->foreign('pelayan_id')->on('anggota')->references('id');

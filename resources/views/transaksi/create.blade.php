@@ -113,8 +113,11 @@
                 </tr>
               </tfoot>
             </table>
-            <a href="#" class="btn btn-secondary">Utang</a>
-            <a href="#" class="btn btn-primary">Lunas</a>
+            <form action="{{ $form_action_utang }}" method="POST" class="d-inline">
+              @csrf
+              <button type="submit" class="btn btn-secondary">Utang</button>
+            </form>
+            <a href="#" class="btn btn-primary">Lunas Tunai</a>
           </div>
         @endif
       </div>
@@ -193,8 +196,9 @@
                   @if (!old('produk_id'))
                     <option selected disabled>Pilih merchant</option>
                   @endif
-                  @foreach ($daftar_produk as $prodk)
-                    <option value="{{ $prodk->id }}" @selected(old('produk_id') == $prodk->id)>{{ $prodk->nama_produk }}</option>
+                  @foreach ($daftar_produk as $prdk)
+                    <option value="{{ $prdk->id }}" @selected(old('produk_id') == $prdk->id)>{{ $prdk->nama_produk }} &nbsp;
+                      {{ $prdk->harga }}</option>
                   @endforeach
                 </select>
                 @error('produk_id')

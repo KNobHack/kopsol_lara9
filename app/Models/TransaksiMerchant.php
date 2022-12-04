@@ -31,4 +31,9 @@ class TransaksiMerchant extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
+
+    public function tunggakan(): Relation
+    {
+        return $this->morphOne(Tunggakan::class, 'tertunggak');
+    }
 }

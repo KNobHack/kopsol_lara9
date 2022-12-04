@@ -49,11 +49,25 @@ Route::middleware('auth')->group(function () {
 		Route::get('/simpanan-wajib', [SimpananController::class, 'simpananWajib'])->name('simpanan.wajib');
 		Route::get('/simpanan-sukarela', [SimpananController::class, 'simpananSukarela'])->name('simpanan.sukarela');
 
-		Route::resource('transaksi', TransaksiController::class);
+		// Transaksi Start
+		Route::resource('transaksi', TransaksiController::class)->except('store');
+
+		// Transaksi create
 		Route::get('/transaksi/create/anggota/{anggota}', [TransaksiController::class, 'createAnggota'])
 			->name('transaksi.create.for.anggota');
+		Route::get('/transaksi/create/non-anggota/{nonanggota}', [TransaksiController::class, 'createNonAnggota'])
+			->name('transaksi.create.for.nonanggota');
+
+		// Transaksi store as draft in session
 		Route::post('/transaksi/create/anggota/{anggota}/add/produk', [TransaksiController::class, 'anggotaAddProduk'])
-			->name('transaksi.create.for.anggota.add.produk');
-		Route::get('/transaksi/create/non-anggota/{nonanggota}', [TransaksiController::class, 'createNonAnggota'])->name('transaksi.create.for.nonanggota');
+			->name('transaksi.add.produk.for.anggota');
+
+		// Transaksi store to database
+		Route::post('/transaksi/lunas/anggota/{anggota}', [TransaksiController::class, 'lunasAnggota'])
+			->name('transaksi.lunas.for.anngota');
+		Route::post('/transaksi/utang/anggota/{anggota}', [TransaksiController::class, 'utangAnggota'])
+			->name('transaksi.utang.for.anggota');
+
+		// Transaksi End
 	});
 });
