@@ -15,18 +15,18 @@ return new class extends Migration
     {
         Schema::create('tunggakan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('anggota_id');
             $table->string('nama_tunggakan');
             $table->decimal('nominal', 18, 2);
-            $table->text('keterangan');
+            $table->text('keterangan')->nullable();
             $table->tinyInteger('status');
 
             $table->bigInteger('tertunggak_id')->nullable();
             $table->string('tertunggak_type')->nullable();
 
-            $table->timestamps();
+            $table->bigInteger('penunggak_id')->nullable();
+            $table->string('penunggak_type')->nullable();
 
-            $table->foreign('anggota_id')->on('anggota')->references('id');
+            $table->timestamps();
         });
     }
 

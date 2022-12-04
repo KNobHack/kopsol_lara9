@@ -76,7 +76,7 @@
               </thead>
               <tbody>
                 @php $total = 0 @endphp
-                @foreach ($draft_transaksi as $key => $transaksi)
+                @foreach ($draft_transaksi->pluck('transaksi') as $key => $transaksi)
                   <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $transaksi['nama'] }}</td>
@@ -113,11 +113,18 @@
                 </tr>
               </tfoot>
             </table>
-            <form action="{{ $form_action_utang }}" method="POST" class="d-inline">
-              @csrf
-              <button type="submit" class="btn btn-secondary">Utang</button>
-            </form>
-            <a href="#" class="btn btn-primary">Lunas Tunai</a>
+            @if ($draft_transaksi->isNotEmpty())
+              @if ($can_utang)
+                <form action="{{ $form_action_utang }}" method="POST" class="d-inline">
+                  @csrf
+                  <button type="submit" class="btn btn-secondary">Utang</button>
+                </form>
+              @endif
+              <form action="{{ $form_action_lunas }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-primary">Lunas</button>
+              </form>
+            @endif
           </div>
         @endif
       </div>
@@ -256,14 +263,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($daftar_tagihan as $dft_tagihan)
+                  @foreach ($daftar_tunggakan as $tunggakan)
                     <tr>
                       <td>{{ $loop->iteration }}</td>
-                      <td>{{ $dft_tagihan->nama_tunggakan }}</td>
-                      <td>{{ $dft_tagihan->nominal }}</td>
-                      <td>{{ $dft_tagihan->keterangan }}</td>
+                      <td>{{ $tunggakan->nama_tunggakan }}</td>
+                      <td>{{ $tunggakan->nominal }}</td>
+                      <td>{{ $tunggakan->keterangan }}</td>
                       <td>
-                        <a href="#" class="btn btn-sm btn-info">Pilih</a>
+                        <form action="{{ $form_action_add_tunggakans[$loop->index] }}" method="POST">
+                          @csrf
+                          <button type="submit" class="btn btn-sm btn-info">Pilih</button>
+                        </form>
                       </td>
                     </tr>
                   @endforeach

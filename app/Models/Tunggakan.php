@@ -22,13 +22,19 @@ class Tunggakan extends Model
         'tertunggak_type'
     ];
 
+    const STATUS = [
+        'lunas' => '1',
+        'belum_lunas' => '2',
+        // 'menunggu_pembayaran' => '3'
+    ];
+
     public function tertunggak()
     {
         return $this->morphTo('tertunggak');
     }
 
-    public function anggota(): Relation
+    public function penunggak()
     {
-        return $this->belongsTo(Anggota::class, 'anggota_id', 'id');
+        return $this->morphTo('penunggak');
     }
 }

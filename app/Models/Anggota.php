@@ -54,6 +54,6 @@ class Anggota extends Model
 
     public function tunggakan(): Relation
     {
-        return $this->hasMany(Tunggakan::class, 'anggota_id', 'id');
+        return $this->morphMany(Tunggakan::class, 'penunggak');
     }
 }

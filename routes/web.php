@@ -59,8 +59,10 @@ Route::middleware('auth')->group(function () {
 			->name('transaksi.create.for.nonanggota');
 
 		// Transaksi store as draft in session
-		Route::post('/transaksi/create/anggota/{anggota}/add/produk', [TransaksiController::class, 'anggotaAddProduk'])
-			->name('transaksi.add.produk.for.anggota');
+		Route::post('/transaksi/create/anggota/{anggota}/add/produk', [TransaksiController::class, 'anggotaAddFromProduk'])
+			->name('transaksi.add.from.produk.for.anggota');
+		Route::post('/transaksi/create/anggota/{anggota}/add/tungakan/{tunggakan}', [TransaksiController::class, 'anggotaAddFromTunggakan'])
+			->name('transaksi.add.from.tunggakan.for.anggota');
 
 		// Transaksi store to database
 		Route::post('/transaksi/lunas/anggota/{anggota}', [TransaksiController::class, 'lunasAnggota'])

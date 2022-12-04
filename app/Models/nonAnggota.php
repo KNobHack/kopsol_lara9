@@ -28,4 +28,9 @@ class nonAnggota extends Model
     {
         return $this->morphMany(Transaksi::class, 'pelaku');
     }
+
+    public function tunggakan(): Relation
+    {
+        return $this->morphMany(Tunggakan::class, 'penunggak');
+    }
 }
