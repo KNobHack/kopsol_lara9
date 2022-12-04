@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('keterangan');
             $table->tinyInteger('status');
 
-            $table->bigInteger('tertunggak_id');
-            $table->string('tertunggak_type');
+            $table->bigInteger('tertunggak_id')->nullable();
+            $table->string('tertunggak_type')->nullable();
 
             $table->timestamps();
 
