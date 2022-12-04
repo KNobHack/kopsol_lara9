@@ -37,11 +37,20 @@
     </div>
   </li>
 
-  <!-- Nav Item - Dashboard -->
-  <li class="nav-item active">
-    <a class="nav-link" href="{{ route('merchant') }}">
-      <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Merchant</span></a>
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenuMerchant"
+      aria-expanded="true" aria-controls="collapseMenuMerchant">
+      <i class="fas fa-fw fa-shopping-bag"></i>
+      <span>Merchant</span>
+    </a>
+    <div id="collapseMenuMerchant" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        {{-- <h6 class="collapse-header">Custom Components:</h6> --}}
+        <a class="collapse-item" href="{{ route('produk.index') }}">Data produk</a>
+        {{-- <a class="collapse-item" href="cards.html">Cards</a> --}}
+      </div>
+    </div>
   </li>
 
   <!-- Nav Item - Pages Collapse Menu -->
