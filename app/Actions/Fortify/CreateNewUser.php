@@ -32,6 +32,8 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
+        session()->flash('alert', [['mode' => 'success', 'message' => 'Akun berhasil dibuat']]);
+
         return User::create([
             'role_id' => User::DefaultRoleId,
             'email' => $input['email'],

@@ -16,9 +16,12 @@ class CompleteProfile
      */
     public function handle(Request $request, Closure $next)
     {
+        $existing_alerts = session('alert', []);
+
         if (!$request->user()->profileComplete()) {
             return redirect(route('profile.edit'))
                 ->with('alert', [
+                    ...($existing_alerts),
                     ['mode' => 'danger', 'message' => 'Anda harus melengkapi profil terlebih dahulu'],
                 ]);
         }
