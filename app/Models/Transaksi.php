@@ -21,9 +21,14 @@ class Transaksi extends Model
 
     // Relations
 
-    public function anggota(): Relation
+    public function pelayan(): Relation
     {
-        return $this->hasMany(Anggota::class, 'transaksi_id', 'id');
+        return $this->belongsTo(Anggota::class, 'pelayan_id', 'id');
+    }
+
+    public function pelaku(): Relation
+    {
+        return $this->morphTo('pelaku');
     }
 
     public function simpanan(): Relation

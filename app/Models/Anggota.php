@@ -32,6 +32,15 @@ class Anggota extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function melayaniTransaksi(): Relation
+    {
+        return $this->hasMany(Transaksi::class, 'pelayan_id', 'id');
+    }
+
+    public function transaksi(): Relation
+    {
+        return $this->morphMany(Transaksi::class, 'pelaku');
+    }
 
     public function simpanan(): Relation
     {
