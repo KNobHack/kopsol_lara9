@@ -85,7 +85,11 @@
                     <td>{{ $transaksi['jumlah'] }}</td>
                     <td>{{ $transaksi['nominal_total'] }}</td>
                     <td>
-                      <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                      <form action="{{ $form_action_removes[$loop->index] }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                      </form>
                     </td>
                   </tr>
                   @php $total += $transaksi['nominal_total'] @endphp
@@ -239,55 +243,57 @@
       </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalTambahTransaksiTunggakan" data-backdrop="static" tabindex="-1"
-      aria-labelledby="modalTambahTransaksiTunggakanLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTambahTransaksiTunggakanLabel">Tambah Transaksi dari Tunggakan</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="tabel_tunggakan" width="100%" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Nama Tunggakan</th>
-                    <th>Nominal</th>
-                    <th>Keterangan</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach ($daftar_tunggakan as $tunggakan)
-                    <tr>
-                      <td>{{ $loop->iteration }}</td>
-                      <td>{{ $tunggakan->nama_tunggakan }}</td>
-                      <td>{{ $tunggakan->nominal }}</td>
-                      <td>{{ $tunggakan->keterangan }}</td>
-                      <td>
-                        <form action="{{ $form_action_add_tunggakans[$loop->index] }}" method="POST">
-                          @csrf
-                          <button type="submit" class="btn btn-sm btn-info">Pilih</button>
-                        </form>
-                      </td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
+    @if (is_a($pelaku, App\Models\Anggota::class))
+      <!-- Modal -->
+      <div class="modal fade" id="modalTambahTransaksiTunggakan" data-backdrop="static" tabindex="-1"
+        aria-labelledby="modalTambahTransaksiTunggakanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTambahTransaksiTunggakanLabel">Tambah Transaksi dari Tunggakan</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-secondary"
-              onclick="event.preventDefault();$('#modalTambahTransaksiTunggakan').modal('hide')">Batal</a>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="tabel_tunggakan" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Tunggakan</th>
+                      <th>Nominal</th>
+                      <th>Keterangan</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($daftar_tunggakan as $tunggakan)
+                      <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $tunggakan->nama_tunggakan }}</td>
+                        <td>{{ $tunggakan->nominal }}</td>
+                        <td>{{ $tunggakan->keterangan }}</td>
+                        <td>
+                          <form action="{{ $form_action_add_tunggakans[$loop->index] }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-info">Pilih</button>
+                          </form>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-secondary"
+                onclick="event.preventDefault();$('#modalTambahTransaksiTunggakan').modal('hide')">Batal</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    @endif
   @endif
 @endsection
 

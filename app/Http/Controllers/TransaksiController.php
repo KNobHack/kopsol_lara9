@@ -65,6 +65,12 @@ class TransaksiController extends Controller
                 ->whereNotIn('id', $draft_transaksi_tunggakan->pluck('tunggakan_id'));
         }
 
+        // Route Generating draft transaksi remove
+        $draft_transaksi_remove_routes = [];
+        foreach ($draft_transaksi as $key => $value) {
+            $draft_transaksi_remove_routes[] = route('transaksi.remove.for.anggota', ['anggota' => $anggota, 'index' => $key]);
+        }
+
         // Route generating daftar tunggakan
         $daftar_tunggakan_routes = [];
         foreach ($daftar_tunggakan as $tunggakan) {
@@ -86,6 +92,7 @@ class TransaksiController extends Controller
                 'draft_transaksi' => $draft_transaksi,
                 'form_action_add_produk' => route('transaksi.add.from.produk.for.anggota', $anggota),
                 'form_action_add_tunggakans' => $daftar_tunggakan_routes,
+                'form_action_removes' => $draft_transaksi_remove_routes,
                 'form_action_utang' => route('transaksi.utang.for.anggota', $anggota),
                 'form_action_lunas' => route('transaksi.lunas.for.anngota', $anggota),
                 'can_utang' => $can_utang,
@@ -130,6 +137,22 @@ class TransaksiController extends Controller
         );
 
         return redirect()->back();
+    }
+
+    /**
+     * Remove draft for Anggota
+     */
+    public function anggotaRemove(Anggota $anggota, int $index)
+    {
+        $draft_transaksi = session('draft_transaksi');
+        if (!isset($draft_transaksi['anggota'][$anggota->id][$index])) {
+            return redirect()->back();
+        }
+
+        unset($draft_transaksi['anggota'][$anggota->id][$index]);
+        session()->put('draft_transaksi', $draft_transaksi);
+
+        return redirect()->route('transaksi.create.for.anggota', ['anggota' => $anggota]);
     }
 
     /**

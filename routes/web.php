@@ -7,6 +7,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\TransaksiController;
+use App\Models\Transaksi;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,11 @@ Route::middleware('auth')->group(function () {
 			->name('transaksi.add.from.produk.for.anggota');
 		Route::post('/transaksi/create/anggota/{anggota}/add/tungakan/{tunggakan}', [TransaksiController::class, 'anggotaAddFromTunggakan'])
 			->name('transaksi.add.from.tunggakan.for.anggota');
+
+		// Transaksi remove draft
+		Route::delete('/transaksi/create/anggota/{anggota}/remove/{index}', [TransaksiController::class, 'anggotaRemove'])
+			->name('transaksi.remove.for.anggota')
+			->where('id', '[0-9]+');
 
 		// Transaksi store to database
 		Route::post('/transaksi/lunas/anggota/{anggota}', [TransaksiController::class, 'lunasAnggota'])
