@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class nonAnggota extends Model
+class NonAnggota extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,9 @@ class nonAnggota extends Model
 
     protected $fillable = [
         'user_id',
-        'nama'
+        'nama',
+        'jenis_kelamin',
+        'nomor_telpon'
     ];
 
     // Relations

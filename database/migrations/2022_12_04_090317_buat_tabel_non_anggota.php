@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable();
             $table->string('nama');
+            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->string('nomor_telpon', 15)->unique()->nullable();
 
             $table->foreign('user_id')->on('users')->references('id');
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\NonAnggotaController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function () {
 		Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
 		Route::resource('anggota', AnggotaController::class);
+
+		Route::resource('non-anggota', NonAnggotaController::class)
+			->parameter('non-anggota', 'non_anggota');
 
 		Route::resource('produk', ProdukController::class);
 
