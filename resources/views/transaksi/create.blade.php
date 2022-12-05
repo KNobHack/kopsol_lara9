@@ -100,10 +100,16 @@
                       data-target="#modalTambahTransaksiProduk">
                       Beli Produk
                     </button>
-                    @if (is_a($pelaku, App\Models\Anggota::class))
+                    @if (is_a($pelaku, \App\Models\Anggota::class) || is_a($pelaku, \App\Models\NonAnggota::class))
                       <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                         data-target="#modalTambahTransaksiTunggakan">
                         Bayar Tunggakan
+                      </button>
+                    @endif
+                    @if (is_a($pelaku, \App\Models\Anggota::class))
+                      <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                        data-target="#modalTambahTransaksiSukarela">
+                        Simpanan Sukarela
                       </button>
                     @endif
                   </td>
@@ -243,7 +249,7 @@
       </div>
     </div>
 
-    @if (is_a($pelaku, App\Models\Anggota::class))
+    @if (is_a($pelaku, \App\Models\Anggota::class) || is_a($pelaku, \App\Models\NonAnggota::class))
       <!-- Modal -->
       <div class="modal fade" id="modalTambahTransaksiTunggakan" data-backdrop="static" tabindex="-1"
         aria-labelledby="modalTambahTransaksiTunggakanLabel" aria-hidden="true">
@@ -275,7 +281,7 @@
                         <td>{{ $tunggakan->nominal }}</td>
                         <td>{{ $tunggakan->keterangan }}</td>
                         <td>
-                          <form action="{{ $form_action_add_tunggakans[$loop->index] }}" method="POST">
+                          <form action="{{ $form_action_add_tunggakan[$loop->index] }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-sm btn-info">Pilih</button>
                           </form>
@@ -290,6 +296,41 @@
               <a href="#" class="btn btn-secondary"
                 onclick="event.preventDefault();$('#modalTambahTransaksiTunggakan').modal('hide')">Batal</a>
             </div>
+          </div>
+        </div>
+      </div>
+    @endif
+
+    @if (is_a($pelaku, \App\Models\Anggota::class))
+      <!-- Modal -->
+      <div class="modal fade" id="modalTambahTransaksiSukarela" data-backdrop="static" tabindex="-1"
+        aria-labelledby="modalTambahTransaksiSukarelaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTambahTransaksiSukarelaLabel">Isi data transaksi</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="{{ $form_action_add_sukarela }}" method="POST">
+              @csrf
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="">Nominal</label>
+                  <input type="number" class="form-control" name="nominal" value="{{ old('nominal') }}"
+                    value="Masukkan nominal simpanan sukarela...">
+                  @error('nominal')
+                    <small class="form-text text-danger">{{ $message }}</small>
+                  @enderror
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Tambah</button>
+                <a href="#" class="btn btn-secondary"
+                  onclick="event.preventDefault();$('#modalTambahTransaksiSukarela').modal('hide')">Batal</a>
+              </div>
+            </form>
           </div>
         </div>
       </div>

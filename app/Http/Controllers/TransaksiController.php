@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TransaksiAddFromProdukRequest;
+use App\Http\Requests\TransaksiAddFromSimpananRequest;
+use App\Http\Requests\TransaksiAddFromSukarelaRequest;
 use App\Models\Anggota;
 use App\Models\Produk;
+use App\Models\Simpanan;
 use App\Models\Transaksi;
 use App\Models\TransaksiMerchant;
 use App\Models\Tunggakan;
@@ -60,6 +63,12 @@ class TransaksiController extends Controller
                     return $value['tipe'] === 'tunggakan';
                 });
 
+            // get only sukarela
+            $draft_transaksi_sukarela = $draft_transaksi
+                ->filter(function ($value) {
+                    return $value['tipe'] === 'sukarela';
+                });
+
             // daftar tunggakan filter added tunggakan
             $daftar_tunggakan = $daftar_tunggakan
                 ->whereNotIn('id', $draft_transaksi_tunggakan->pluck('tunggakan_id'));
@@ -80,7 +89,13 @@ class TransaksiController extends Controller
             );
         }
 
-        $can_utang = (isset($draft_transaksi_tunggakan)) ? $draft_transaksi_tunggakan->isEmpty() : true;
+        $can_utang = (isset($draft_transaksi_tunggakan))
+            ? $draft_transaksi_tunggakan->isEmpty()
+            : true;
+
+        $can_utang = (isset($draft_transaksi_sukarela))
+            ? $draft_transaksi_sukarela->isEmpty()
+            : true;
 
         return view(
             'transaksi.create',
@@ -91,7 +106,8 @@ class TransaksiController extends Controller
                 'pelaku' => $anggota, // Yang akan transaksi
                 'draft_transaksi' => $draft_transaksi,
                 'form_action_add_produk' => route('transaksi.add.from.produk.for.anggota', $anggota),
-                'form_action_add_tunggakans' => $daftar_tunggakan_routes,
+                'form_action_add_tunggakan' => $daftar_tunggakan_routes,
+                'form_action_add_sukarela' => route('transaksi.add.from.sukarela.for.anggota', $anggota),
                 'form_action_removes' => $draft_transaksi_remove_routes,
                 'form_action_utang' => route('transaksi.utang.for.anggota', $anggota),
                 'form_action_lunas' => route('transaksi.lunas.for.anngota', $anggota),
@@ -139,6 +155,25 @@ class TransaksiController extends Controller
         return redirect()->back();
     }
 
+    public function anggotaAddFromSukarela(TransaksiAddFromSukarelaRequest $request, Anggota $anggota)
+    {
+        session()->push(
+            "draft_transaksi.anggota.{$anggota->id}",
+            [
+                'transaksi' => [
+                    'nama' => 'Simpanan Sukarela',
+                    'keterangan' => '',
+                    'nominal_satuan' => $request->validated('nominal'),
+                    'jumlah' => 1,
+                    'nominal_total' => $request->validated('nominal'),
+                ],
+                'tipe' => 'sukarela',
+            ]
+        );
+
+        return redirect()->back();
+    }
+
     /**
      * Remove draft for Anggota
      */
@@ -173,12 +208,26 @@ class TransaksiController extends Controller
 
         $produk = collect();
         $tunggakan_ids = collect();
+        $sukarela = collect();
         $total = 0;
 
         foreach ($draft_transaksi as  $transaksi) {
 
-            if (!in_array($transaksi['tipe'], ['produk', 'tunggakan'])) {
+            if (!in_array($transaksi['tipe'], ['produk', 'tunggakan', 'sukarela'])) {
                 throw new Exception("Error getting transaksi tipe", 1);
+            }
+
+            if (in_array($transaksi['tipe'], ['sukarela', 'tunggakan']) && $is_nunggak == true) {
+                // Tudak boleh nunggak jika sedang bayar tunggakan atau simpanan sukarela
+                $message = ($transaksi['tipe'] == 'tunggakan')
+                    ? 'Tidak bisa menunggak ketika ingin membayar tunggakan'
+                    : 'Tidak bisa menunggak ketika ingin menyimpan';
+
+                return redirect()->back()
+                    ->with('alert', [[
+                        'mode' => 'danger',
+                        'message' => $message
+                    ]]);
             }
 
             $total += $transaksi['transaksi']['nominal_total'];
@@ -193,18 +242,20 @@ class TransaksiController extends Controller
                 continue;
             }
 
-            if ($transaksi['tipe'] == 'tunggakan' && $is_nunggak == false) {
-                $tunggakan_ids->push($transaksi['tunggakan_id']);
+            if ($transaksi['tipe'] == 'sukarela' && is_a($pelaku_model, \App\Models\Anggota::class)) {
+                $sukarela->push([
+                    'anggota_id' => $pelaku_model->id,
+                    'jenis' => Simpanan::JENIS['sukarela'],
+                    'nominal' => $transaksi['transaksi']['nominal_total'],
+                    'status' => Simpanan::STATUS['dibayar'],
+                ]);
                 continue;
             }
 
-            // if tipe = tunggakan && cannot nunggak
-            // Tudak boleh nunggak jika sedang bayar tunggakan
-            return redirect()->back()
-                ->with('alert', [[
-                    'mode' => 'danger',
-                    'message' => 'Tidak bisa menunggak ketika ingin bayar tunggakan :)'
-                ]]);
+            if ($transaksi['tipe'] == 'tunggakan') {
+                $tunggakan_ids->push($transaksi['tunggakan_id']);
+                continue;
+            }
         }
 
         $transaksi = [
@@ -216,17 +267,34 @@ class TransaksiController extends Controller
             'keterangan' => NULL,
         ];
 
-        DB::transaction(function () use ($transaksi, $produk, $pelaku_model, $is_nunggak, $tunggakan_ids) {
+        DB::transaction(function () use ($transaksi, $produk, $pelaku_model, $is_nunggak, $tunggakan_ids, $sukarela) {
             $transaksi = Transaksi::create($transaksi);
 
-            $produk = $produk->map(function ($value) use ($transaksi) {
-                $value['transaksi_id'] = $transaksi->id;
-                return $value;
-            });
+            // Insert transaksi for product START
+            if ($produk->isNotEmpty()) {
+                $produk = $produk->map(function ($value) use ($transaksi) {
+                    $value['transaksi_id'] = $transaksi->id;
+                    return $value;
+                });
 
-            TransaksiMerchant::insert($produk->toArray());
+                TransaksiMerchant::insert($produk->toArray());
+            }
+            // Insert transaksi for product END
+
+            // Insert transaksi for sukarela START
+            if ($sukarela->isNotEmpty()) {
+                $sukarela = $sukarela->map(function ($value) use ($transaksi) {
+                    $value['transaksi_id'] = $transaksi->id;
+                    return $value;
+                });
+
+                Simpanan::insert($sukarela->toArray());
+            }
+            // Insert transaksi for sukarela END
 
             if ($is_nunggak) {
+
+                // Tunggakan for produk START
                 $transaksi_merchant = TransaksiMerchant::where(['transaksi_id' => $transaksi->id])->get();
 
                 $tunggakan = [];
@@ -242,6 +310,7 @@ class TransaksiController extends Controller
                         'tertunggak_type' => $t_merchant::class,
                     ];
                 }
+                // Tunggakan for produk END
 
                 Tunggakan::insert($tunggakan);
             } else { // bayar lunas tunggakan

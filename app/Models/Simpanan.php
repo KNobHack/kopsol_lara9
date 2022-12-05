@@ -19,6 +19,17 @@ class Simpanan extends Model
         'status',
     ];
 
+    const JENIS = [
+        'pokok' => 1,
+        'wajib' => 2,
+        'sukarela' => 3,
+    ];
+
+    const STATUS = [
+        'dibayar' => 1,
+        'menunggak' => 2,
+    ];
+
     // Relations
 
     public function transaksi(): Relation

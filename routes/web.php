@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
 			->name('transaksi.add.from.produk.for.anggota');
 		Route::post('/transaksi/create/anggota/{anggota}/add/tungakan/{tunggakan}', [TransaksiController::class, 'anggotaAddFromTunggakan'])
 			->name('transaksi.add.from.tunggakan.for.anggota');
+		Route::post('/transaksi/create/anggota/{anggota}/add/sukarela', [TransaksiController::class, 'anggotaAddFromSukarela'])
+			->name('transaksi.add.from.sukarela.for.anggota');
 
 		// Transaksi remove draft
 		Route::delete('/transaksi/create/anggota/{anggota}/remove/{index}', [TransaksiController::class, 'anggotaRemove'])
