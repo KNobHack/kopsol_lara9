@@ -22,24 +22,13 @@
           <div class="card-body">
             <img src="{{ url('assets/img/undraw_profile.svg') }}" alt="" class="img-profile rounded-circle">
           </div>
-          <div class="card-footer">
-            <a href="#" class="btn btn-block btn-success">Ganti Foto</a>
-          </div>
         </div>
       </div>
       <div class="col-md-7 col-lg-8">
         <div class="card">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Profile Anda</h6>
-            <div class="dropdown no-arrow">
-              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                <a href="{{ $edit_href ?? route('profile.edit') }}" class="dropdown-item">Edit profil</a>
-              </div>
-            </div>
+            <a href="{{ $edit_href ?? route('profile.edit') }}" class="btn btn-sm btn-success">Edit Profile</a>
           </div>
           <div class="card-body">
             <form>

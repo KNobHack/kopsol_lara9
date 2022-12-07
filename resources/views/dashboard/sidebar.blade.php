@@ -12,10 +12,20 @@
   <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Dashboard -->
-  <li class="nav-item active">
+  <li class="nav-item">
     <a class="nav-link" href="{{ route('dashboard') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Profile -->
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('profile') }}">
+      <i class="fas fa-fw fa-user"></i>
+      <span>Profile</span></a>
   </li>
 
   <!-- Divider -->
@@ -25,7 +35,7 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenuAnggota"
       aria-expanded="true" aria-controls="collapseMenuAnggota">
-      <i class="fas fa-fw fa-user"></i>
+      <i class="fas fa-fw fa-user-tie"></i>
       <span>Keanggotaan</span>
     </a>
     <div id="collapseMenuAnggota" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -53,6 +63,9 @@
       </div>
     </div>
   </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
@@ -87,6 +100,16 @@
         {{-- <a class="collapse-item" href="cards.html">Cards</a> --}}
       </div>
     </div>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Logout -->
+  <li class="nav-item">
+    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+      <i class="fas fa-fw fa-sign-out-alt"></i>
+      <span>Logout</span></a>
   </li>
 
   <!-- Divider -->
