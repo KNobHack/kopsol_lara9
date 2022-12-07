@@ -44,7 +44,7 @@
               @foreach ($transaksi as $trans)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $trans->pelaku->nama_lengkap }}</td>
+                  <td>{{ $trans->pelaku->nama_lengkap ?? $trans->pelaku->nama }}</td>
                   <td>{{ $trans->nominal }}</td>
                   <td>{{ $trans->status }}</td>
                   <td>{{ $trans->keteragan }}</td>

@@ -65,21 +65,38 @@ Route::middleware('auth')->group(function () {
 		// Transaksi store as draft in session
 		Route::post('/transaksi/create/anggota/{anggota}/add/produk', [TransaksiController::class, 'anggotaAddFromProduk'])
 			->name('transaksi.add.from.produk.for.anggota');
-		Route::post('/transaksi/create/anggota/{anggota}/add/tungakan/{tunggakan}', [TransaksiController::class, 'anggotaAddFromTunggakan'])
+		Route::post('/transaksi/create/anggota/{anggota}/add/tunggakan/{tunggakan}', [TransaksiController::class, 'anggotaAddFromTunggakan'])
 			->name('transaksi.add.from.tunggakan.for.anggota');
 		Route::post('/transaksi/create/anggota/{anggota}/add/sukarela', [TransaksiController::class, 'anggotaAddFromSukarela'])
 			->name('transaksi.add.from.sukarela.for.anggota');
 
+		Route::post('/transaksi/create/non-anggota/{nonanggota}/add/produk', [TransaksiController::class, 'nonAnggotaAddFromProduk'])
+			->name('transaksi.add.from.produk.for.nonanggota');
+		// ->parameter('nonanggota', 'nonanggota');
+		Route::post('/transaksi/create/non-anggota/{nonanggota}/add/tunggakan/{tunggakan}', [TransaksiController::class, 'nonAnggotaAddFromTunggakan'])
+			->name('transaksi.add.from.tunggakan.for.nonanggota');
+		// ->parameter('nonanggota', 'nonanggota');
+
 		// Transaksi remove draft
-		Route::delete('/transaksi/create/anggota/{anggota}/remove/{index}', [TransaksiController::class, 'anggotaRemove'])
+		Route::delete('/transaksi/remove/anggota/{anggota}/remove/{index}', [TransaksiController::class, 'anggotaRemove'])
 			->name('transaksi.remove.for.anggota')
+			->where('id', '[0-9]+');
+		Route::delete('/transaksi/remove/non-anggota/{nonanggota}/remove/{index}', [TransaksiController::class, 'nonAnggotaRemove'])
+			->name('transaksi.remove.for.nonanggota')
 			->where('id', '[0-9]+');
 
 		// Transaksi store to database
-		Route::post('/transaksi/lunas/anggota/{anggota}', [TransaksiController::class, 'lunasAnggota'])
-			->name('transaksi.lunas.for.anngota');
-		Route::post('/transaksi/utang/anggota/{anggota}', [TransaksiController::class, 'utangAnggota'])
+		Route::post('/transaksi/lunas/anggota/{anggota}', [TransaksiController::class, 'lunasNonAnggota'])
+			->name('transaksi.lunas.for.anggota');
+		Route::post('/transaksi/utang/anggota/{anggota}', [TransaksiController::class, 'utangNonAnggota'])
 			->name('transaksi.utang.for.anggota');
+
+		Route::post('/transaksi/lunas/non-anggota/{nonanggota}', [TransaksiController::class, 'lunasNonAnggota'])
+			->name('transaksi.lunas.for.nonanggota');
+		// ->parameter('nonanggota', 'nonanggota');
+		Route::post('/transaksi/utang/non-anggota/{nonanggota}', [TransaksiController::class, 'utangNonAnggota'])
+			->name('transaksi.utang.for.nonanggota');
+		// ->parameter('nonanggota', 'nonanggota');
 
 		// Transaksi End
 	});

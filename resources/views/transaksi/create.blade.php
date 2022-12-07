@@ -35,7 +35,8 @@
           <span class="text">Anggota</span>
         </button>
 
-        <button type="button" class="btn btn-primary btn-icon-split btn-sm disabled">
+        <button type="button" class="btn btn-primary btn-icon-split btn-sm" data-toggle="modal"
+          data-target="#modalCariNonAnggota">
           <span class="icon text-white-50">
             <i class="fas fa-search"></i>
           </span>
@@ -176,6 +177,54 @@
                     <td>{{ $agt->nomor_telpon }}</td>
                     <td>
                       <a href="{{ route('transaksi.create.for.anggota', $agt->id) }}"
+                        class="btn btn-sm btn-info">Pilih</a>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-secondary"
+            onclick="event.preventDefault();$('#modalCariAnggota').modal('hide')">Batal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalCariNonAnggota" data-backdrop="static" tabindex="-1"
+    aria-labelledby="modalCariNonAnggotaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCariNonAnggotaLabel">Cari non-anggota</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="tabel_nonanggota" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama</th>
+                  <th>Jenis Kelamin</th>
+                  <th>No Telpon</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach ($daftar_non_anggota as $non_agt)
+                  <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $non_agt->nama }}</td>
+                    <td>{{ $non_agt->jenis_kelamin }}</td>
+                    <td>{{ $non_agt->nomor_telpon ?? '-' }}</td>
+                    <td>
+                      <a href="{{ route('transaksi.create.for.nonanggota', $non_agt->id) }}"
                         class="btn btn-sm btn-info">Pilih</a>
                     </td>
                   </tr>
@@ -344,8 +393,7 @@
   <script>
     $(document).ready(function() {
       $('#tabel_anggota').DataTable();
-    });
-    $(document).ready(function() {
+      $('#tabel_nonanggota').DataTable();
       $('#tabel_tunggakan').DataTable();
     });
   </script>

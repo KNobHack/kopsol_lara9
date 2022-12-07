@@ -6,6 +6,7 @@ use App\Http\Requests\TransaksiAddFromProdukRequest;
 use App\Http\Requests\TransaksiAddFromSimpananRequest;
 use App\Http\Requests\TransaksiAddFromSukarelaRequest;
 use App\Models\Anggota;
+use App\Models\NonAnggota;
 use App\Models\Produk;
 use App\Models\Simpanan;
 use App\Models\Transaksi;
@@ -38,90 +39,144 @@ class TransaksiController extends Controller
     public function create()
     {
         $daftar_anggota = Anggota::all();
-        return view('transaksi.create', ['daftar_anggota' => $daftar_anggota,]);
+        $daftar_non_anggota = NonAnggota::all();
+        return view('transaksi.create', [
+            'daftar_anggota' => $daftar_anggota,
+            'daftar_non_anggota' => $daftar_non_anggota
+        ]);
     }
 
     /**
      * Create draft for Anggota
      */
-    public function createAnggota(Anggota $anggota)
-    {
+    private function createTemplate(
+        string $pelaku_type,
+        mixed $pelaku_model,
+        string $form_action_add_produk_route_name,
+        string $form_action_add_tunggakan_route_name,
+        string $form_action_add_sukarela_route_name,
+        string $form_action_removes_route_name,
+        string $form_action_utang_route_name,
+        string $form_action_lunas_route_name
+    ) {
         // Data esensial
         $daftar_anggota = Anggota::all();
-        $daftar_tunggakan = $anggota->tunggakan->where('status', Tunggakan::STATUS['belum_lunas']);
+        $daftar_non_anggota = NonAnggota::all();
         $daftar_produk = Produk::all();
+
+        $daftar_tunggakan = collect();
+        if (is_a($pelaku_model, Anggota::class) || is_a($pelaku_model, NonAnggota::class)) {
+            $daftar_tunggakan = $pelaku_model
+                ->tunggakan->where('status', Tunggakan::STATUS['belum_lunas']);
+        }
 
         // data draft transaksi
         $draft_transaksi = collect();
         $draft_transaksi_session = session('draft_transaksi');
-        if (isset($draft_transaksi_session['anggota'][$anggota->id])) {
+        $draft_transaksi_tunggakan = collect();
+        $draft_transaksi_sukarela = collect();
+        $daftar_tunggakan_routes = [];
+
+        if (isset($draft_transaksi_session[$pelaku_type][$pelaku_model->id])) {
             // for table view
-            $draft_transaksi = collect($draft_transaksi_session['anggota'][$anggota->id]);
-
-            // get only tunggakan
-            $draft_transaksi_tunggakan = $draft_transaksi
-                ->filter(function ($value) {
-                    return $value['tipe'] === 'tunggakan';
-                });
-
-            // get only sukarela
-            $draft_transaksi_sukarela = $draft_transaksi
-                ->filter(function ($value) {
-                    return $value['tipe'] === 'sukarela';
-                });
-
-            // daftar tunggakan filter added tunggakan
-            $daftar_tunggakan = $daftar_tunggakan
-                ->whereNotIn('id', $draft_transaksi_tunggakan->pluck('tunggakan_id'));
+            $draft_transaksi = collect($draft_transaksi_session[$pelaku_type][$pelaku_model->id]);
         }
 
-        // Route Generating draft transaksi remove
-        $draft_transaksi_remove_routes = [];
-        foreach ($draft_transaksi as $key => $value) {
-            $draft_transaksi_remove_routes[] = route('transaksi.remove.for.anggota', ['anggota' => $anggota, 'index' => $key]);
-        }
+        // get only tunggakan
+        $draft_transaksi_tunggakan = $draft_transaksi
+            ->filter(function ($value) {
+                return $value['tipe'] === 'tunggakan';
+            });
+
+        // get only sukarela
+        $draft_transaksi_sukarela = $draft_transaksi
+            ->filter(function ($value) {
+                return $value['tipe'] === 'sukarela';
+            });
+
+        // daftar tunggakan filter added tunggakan
+        $daftar_tunggakan = $daftar_tunggakan
+            ->whereNotIn('id', $draft_transaksi_tunggakan->pluck('tunggakan_id'));
 
         // Route generating daftar tunggakan
-        $daftar_tunggakan_routes = [];
         foreach ($daftar_tunggakan as $tunggakan) {
             $daftar_tunggakan_routes[] = route(
-                'transaksi.add.from.tunggakan.for.anggota',
-                ['anggota' => $anggota, 'tunggakan' => $tunggakan]
+                $form_action_add_tunggakan_route_name,
+                [$pelaku_type => $pelaku_model, 'tunggakan' => $tunggakan]
             );
         }
 
-        $can_utang = (isset($draft_transaksi_tunggakan))
-            ? $draft_transaksi_tunggakan->isEmpty()
-            : true;
+        $draft_transaksi_remove_routes = [];
+        // Route Generating draft transaksi remove
+        foreach ($draft_transaksi as $key => $value) {
+            $draft_transaksi_remove_routes[] = route($form_action_removes_route_name, [$pelaku_type => $pelaku_model, 'index' => $key]);
+        }
 
-        $can_utang = (isset($draft_transaksi_sukarela))
-            ? $draft_transaksi_sukarela->isEmpty()
-            : true;
+        $can_utang =
+            $draft_transaksi_tunggakan->isEmpty() &&
+            $draft_transaksi_sukarela->isEmpty();
+
+        $form_action_sukarela =
+            (is_a($pelaku_model, Anggota::class))
+            ? route($form_action_add_sukarela_route_name, [$pelaku_type => $pelaku_model])
+            : '#';
 
         return view(
             'transaksi.create',
             [
                 'daftar_anggota' => $daftar_anggota,
+                'daftar_non_anggota' => $daftar_non_anggota,
                 'daftar_tunggakan' => $daftar_tunggakan,
                 'daftar_produk' => $daftar_produk,
-                'pelaku' => $anggota, // Yang akan transaksi
+                'pelaku' => $pelaku_model, // Yang akan transaksi
                 'draft_transaksi' => $draft_transaksi,
-                'form_action_add_produk' => route('transaksi.add.from.produk.for.anggota', $anggota),
+                'form_action_add_produk' => route($form_action_add_produk_route_name, [$pelaku_type => $pelaku_model]),
                 'form_action_add_tunggakan' => $daftar_tunggakan_routes,
-                'form_action_add_sukarela' => route('transaksi.add.from.sukarela.for.anggota', $anggota),
+                'form_action_add_sukarela' => $form_action_sukarela,
                 'form_action_removes' => $draft_transaksi_remove_routes,
-                'form_action_utang' => route('transaksi.utang.for.anggota', $anggota),
-                'form_action_lunas' => route('transaksi.lunas.for.anngota', $anggota),
+                'form_action_utang' => route($form_action_utang_route_name, [$pelaku_type => $pelaku_model]),
+                'form_action_lunas' => route($form_action_lunas_route_name, [$pelaku_type => $pelaku_model]),
                 'can_utang' => $can_utang,
             ]
         );
     }
 
-    public function anggotaAddFromProduk(TransaksiAddFromProdukRequest $request, Anggota $anggota)
+    public function createAnggota(Anggota $anggota)
     {
+        return $this->createTemplate(
+            pelaku_type: 'anggota',
+            pelaku_model: $anggota,
+            form_action_add_produk_route_name: 'transaksi.add.from.produk.for.anggota',
+            form_action_add_tunggakan_route_name: 'transaksi.add.from.tunggakan.for.anggota',
+            form_action_add_sukarela_route_name: 'transaksi.add.from.sukarela.for.anggota',
+            form_action_removes_route_name: 'transaksi.remove.for.anggota',
+            form_action_utang_route_name: 'transaksi.utang.for.anggota',
+            form_action_lunas_route_name: 'transaksi.lunas.for.anggota'
+        );
+    }
+
+    public function createNonAnggota(NonAnggota $nonanggota)
+    {
+        return $this->createTemplate(
+            pelaku_type: 'nonanggota',
+            pelaku_model: $nonanggota,
+            form_action_add_produk_route_name: 'transaksi.add.from.produk.for.nonanggota',
+            form_action_add_tunggakan_route_name: 'transaksi.add.from.tunggakan.for.nonanggota',
+            form_action_add_sukarela_route_name: 'transaksi.add.from.sukarela.for.nonanggota',
+            form_action_removes_route_name: 'transaksi.remove.for.nonanggota',
+            form_action_utang_route_name: 'transaksi.utang.for.nonanggota',
+            form_action_lunas_route_name: 'transaksi.lunas.for.nonanggota'
+        );
+    }
+
+    private function addFromProduk(
+        TransaksiAddFromProdukRequest $request,
+        string $pelaku_type,
+        mixed $pelaku_model
+    ) {
         $produk = Produk::findOrFail($request->validated('produk_id'));
         session()->push(
-            "draft_transaksi.anggota.{$anggota->id}",
+            "draft_transaksi.{$pelaku_type}.{$pelaku_model->id}",
             [
                 'transaksi' => [
                     ...$request->validated(),
@@ -136,10 +191,28 @@ class TransaksiController extends Controller
         return redirect()->back();
     }
 
-    public function anggotaAddFromTunggakan(Anggota $anggota, Tunggakan $tunggakan)
+    public function anggotaAddFromProduk(TransaksiAddFromProdukRequest $request, Anggota $anggota)
+    {
+        return $this->addFromProduk(
+            $request,
+            'anggota',
+            $anggota
+        );
+    }
+
+    public function nonAnggotaAddFromProduk(TransaksiAddFromProdukRequest $request, NonAnggota $nonanggota)
+    {
+        return $this->addFromProduk(
+            $request,
+            'nonanggota',
+            $nonanggota
+        );
+    }
+
+    private function addFromTunggakan(string $pelaku_type, mixed $pelaku_model, Tunggakan $tunggakan)
     {
         session()->push(
-            "draft_transaksi.anggota.{$anggota->id}",
+            "draft_transaksi.{$pelaku_type}.{$pelaku_model->id}",
             [
                 'transaksi' => [
                     'nama' => $tunggakan->nama_tunggakan,
@@ -154,6 +227,24 @@ class TransaksiController extends Controller
         );
 
         return redirect()->back();
+    }
+
+    public function anggotaAddFromTunggakan(Anggota $anggota, Tunggakan $tunggakan)
+    {
+        return $this->addFromTunggakan(
+            'anggota',
+            $anggota,
+            $tunggakan
+        );
+    }
+
+    public function nonAnggotaAddFromTunggakan(NonAnggota $nonanggota, Tunggakan $tunggakan)
+    {
+        return $this->addFromTunggakan(
+            'nonanggota',
+            $nonanggota,
+            $tunggakan
+        );
     }
 
     public function anggotaAddFromSukarela(TransaksiAddFromSukarelaRequest $request, Anggota $anggota)
@@ -176,19 +267,39 @@ class TransaksiController extends Controller
     }
 
     /**
-     * Remove draft for Anggota
+     * Remove draft
      */
-    public function anggotaRemove(Anggota $anggota, int $index)
+    private function remove(string $pelaku_type, mixed $pelaku_model, int $index, string $redirect_route_name)
     {
         $draft_transaksi = session('draft_transaksi');
-        if (!isset($draft_transaksi['anggota'][$anggota->id][$index])) {
+        if (!isset($draft_transaksi[$pelaku_type][$pelaku_model->id][$index])) {
             return redirect()->back();
         }
 
-        unset($draft_transaksi['anggota'][$anggota->id][$index]);
+        unset($draft_transaksi[$pelaku_type][$pelaku_model->id][$index]);
         session()->put('draft_transaksi', $draft_transaksi);
 
-        return redirect()->route('transaksi.create.for.anggota', ['anggota' => $anggota]);
+        return redirect()->route($redirect_route_name, [$pelaku_type => $pelaku_model]);
+    }
+
+    public function anggotaRemove(Anggota $anggota, int $index)
+    {
+        return $this->remove(
+            'anggota',
+            $anggota,
+            $index,
+            'transaksi.create.for.anggota'
+        );
+    }
+
+    public function nonAnggotaRemove(NonAnggota $nonanggota, int $index)
+    {
+        return $this->remove(
+            'nonanggota',
+            $nonanggota,
+            $index,
+            'transaksi.create.for.nonanggota'
+        );
     }
 
     /**
@@ -339,11 +450,29 @@ class TransaksiController extends Controller
         );
     }
 
+    public function utangNonAnggota(NonAnggota $nonanggota)
+    {
+        return $this->store(
+            pelaku_type: 'nonanggota',
+            pelaku_model: $nonanggota,
+            is_nunggak: true
+        );
+    }
+
     public function lunasAnggota(Anggota $anggota)
     {
         return $this->store(
             pelaku_type: 'anggota',
             pelaku_model: $anggota,
+            is_nunggak: false
+        );
+    }
+
+    public function lunasNonAnggota(NonAnggota $nonanggota)
+    {
+        return $this->store(
+            pelaku_type: 'nonanggota',
+            pelaku_model: $nonanggota,
             is_nunggak: false
         );
     }
