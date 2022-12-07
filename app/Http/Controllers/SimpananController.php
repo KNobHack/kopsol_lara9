@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Simpanan;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class SimpananController extends Controller
@@ -12,15 +13,28 @@ class SimpananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    private function index(Builder $simpanan)
     {
-        $simpanan = Simpanan::with('anggota')->get();
+        $simpanan->with('anggota')->get();
         return view('simpanan.index', ['simpanan' => $simpanan]);
     }
 
-    public function simpananPokok()
+    public function simpananWajib()
     {
-        # code...
+        $simpanan = Simpanan::where([
+            'jenis' => Simpanan::JENIS['wajib'],
+        ]);
+
+        return $this->index($simpanan);
+    }
+
+    public function simpananSukarela()
+    {
+        $simpanan = Simpanan::where([
+            'jenis' => Simpanan::JENIS['sukarela'],
+        ]);
+
+        return $this->index($simpanan);
     }
 
     /**

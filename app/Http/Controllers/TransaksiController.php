@@ -23,9 +23,10 @@ class TransaksiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transaksi = Transaksi::with(['pelayan', 'pelaku'])->get();
+        $transaksi = Transaksi::with(['pelayan', 'pelaku'])
+            ->bulanFilter()->get();
         return view('transaksi.index', ['transaksi' => $transaksi]);
     }
 
@@ -211,7 +212,7 @@ class TransaksiController extends Controller
         $sukarela = collect();
         $total = 0;
 
-        foreach ($draft_transaksi as  $transaksi) {
+        foreach ($draft_transaksi as $transaksi) {
 
             if (!in_array($transaksi['tipe'], ['produk', 'tunggakan', 'sukarela'])) {
                 throw new Exception("Error getting transaksi tipe", 1);
@@ -224,10 +225,7 @@ class TransaksiController extends Controller
                     : 'Tidak bisa menunggak ketika ingin menyimpan';
 
                 return redirect()->back()
-                    ->with('alert', [[
-                        'mode' => 'danger',
-                        'message' => $message
-                    ]]);
+                    ->with('alert', [['mode' => 'danger', 'message' => $message]]);
             }
 
             $total += $transaksi['transaksi']['nominal_total'];

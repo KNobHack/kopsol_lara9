@@ -49,8 +49,7 @@ Route::middleware('auth')->group(function () {
 
 		Route::resource('produk', ProdukController::class);
 
-		Route::resource('simpanan', SimpananController::class);
-		Route::get('/simpanan-pokok', [SimpananController::class, 'simpananPokok'])->name('simpanan.pokok');
+		Route::resource('simpanan', SimpananController::class)->except('index');
 		Route::get('/simpanan-wajib', [SimpananController::class, 'simpananWajib'])->name('simpanan.wajib');
 		Route::get('/simpanan-sukarela', [SimpananController::class, 'simpananSukarela'])->name('simpanan.sukarela');
 

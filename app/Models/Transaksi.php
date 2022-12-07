@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ScopeBulanFilterTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -48,4 +49,7 @@ class Transaksi extends Model
     {
         return $this->hasMany(Penarikan::class, 'transaksi_id', 'id');
     }
+
+    // Scopes
+    use ScopeBulanFilterTrait;
 }

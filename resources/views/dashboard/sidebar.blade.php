@@ -63,10 +63,9 @@
     </a>
     <div id="collapseMenuSimpanan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('simpanan.pokok') }}">Pokok</a>
         <a class="collapse-item" href="{{ route('simpanan.wajib') }}">Wajib</a>
         <a class="collapse-item" href="{{ route('simpanan.sukarela') }}">Sukarela</a>
-        <a class="collapse-item" href="{{ route('simpanan.index') }}">Semua Simpanan</a>
+        {{-- <a class="collapse-item" href="{{ route('simpanan.index') }}">Semua Simpanan</a> --}}
       </div>
     </div>
   </li>
