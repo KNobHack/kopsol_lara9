@@ -15,15 +15,12 @@ return new class extends Migration
     {
         Schema::create('penarikan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('anggota_id');
-            $table->foreignId('transaksi_id');
+            $table->foreignId('anggota_id')->constrained('anggota', 'id');
+            $table->foreignId('transaksi_id')->constrained('transaksi', 'id');
 
             $table->tinyInteger('jenis');
-            $table->decimal('nominal', 18, 2);
+            $table->bigInteger('nominal');
             $table->timestamp('created_at')->nullable();
-
-            $table->foreign('anggota_id')->on('anggota')->references('id');
-            $table->foreign('transaksi_id')->on('transaksi')->references('id');
         });
     }
 

@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('tunggakan', function (Blueprint $table) {
             $table->id();
             $table->string('nama_tunggakan');
-            $table->decimal('nominal', 18, 2);
+            $table->bigInteger('nominal');
             $table->text('keterangan')->nullable();
             $table->tinyInteger('status');
+            $table->bigInteger('sisa_nominal');
 
             $table->bigInteger('tertunggak_id')->nullable();
             $table->string('tertunggak_type')->nullable();

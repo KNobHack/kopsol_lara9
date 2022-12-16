@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -18,8 +19,14 @@ class Tunggakan extends Model
         'nominal',
         'keterangan',
         'status',
+        'sisa_nominal',
         'tertunggak_id',
         'tertunggak_type'
+    ];
+
+    protected $casts = [
+        'nominal' => Money::class,
+        'sisa_nominal' => Money::class,
     ];
 
     const STATUS = [

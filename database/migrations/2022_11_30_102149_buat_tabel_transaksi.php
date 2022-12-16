@@ -15,15 +15,13 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pelayan_id');
+            $table->foreignId('pelayan_id')->constrained('anggota', 'id');
             $table->foreignId('pelaku_id')->nullable();
             $table->string('pelaku_type')->nullable();
-            $table->decimal('nominal', 18, 2);
+            $table->bigInteger('total');
             $table->tinyInteger('status');
             $table->string('keterangan')->nullable();
             $table->timestamps();
-
-            $table->foreign('pelayan_id')->on('anggota')->references('id');
         });
     }
 

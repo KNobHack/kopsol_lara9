@@ -15,16 +15,13 @@ return new class extends Migration
     {
         Schema::create('transaksi_merchant', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaksi_id');
-            $table->foreignId('produk_id');
+            $table->foreignId('transaksi_id')->constrained('transaksi', 'id');
+            $table->foreignId('produk_id')->constrained('produk', 'id');
 
             $table->smallInteger('jumlah_beli');
-            $table->decimal('total_nominal', 18, 2);
+            $table->bigInteger('subtotal');
             $table->text('keterangan')->nullable();
             $table->timestamps();
-
-            $table->foreign('transaksi_id')->on('transaksi')->references('id');
-            $table->foreign('produk_id')->on('produk')->references('id');
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -17,6 +18,10 @@ class Simpanan extends Model
         'jenis',
         'nominal',
         'status',
+    ];
+
+    protected $casts = [
+        'nominal' => Money::class
     ];
 
     const JENIS = [

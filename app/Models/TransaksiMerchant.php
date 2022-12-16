@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -16,8 +17,12 @@ class TransaksiMerchant extends Model
         'id_transaksi',
         'id_produk',
         'jumlah_beli',
-        'total_nominal',
+        'subtotal',
         'keterangan'
+    ];
+
+    protected $casts = [
+        'subtotal' => Money::class
     ];
 
     // Relations

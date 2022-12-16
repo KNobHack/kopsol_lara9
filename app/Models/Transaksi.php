@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use App\Traits\ScopeBulanFilterTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +18,13 @@ class Transaksi extends Model
         'pelayan_id',
         'pelaku_id',
         'pelaku_type',
-        'nominal',
+        'total',
         'status',
         'keterangan'
+    ];
+
+    protected $casts = [
+        'total' => Money::class
     ];
 
     const STATUS = [

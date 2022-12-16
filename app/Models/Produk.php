@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -16,6 +17,12 @@ class Produk extends Model
         'nama_produk',
         'harga',
         'keterangan',
+    ];
+
+    // Casts
+
+    protected $casts = [
+        'harga' => Money::class,
     ];
 
     // Realtions

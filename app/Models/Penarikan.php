@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\Money;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -17,6 +18,10 @@ class Penarikan extends Model
         'transaksi_id',
         'jenis',
         'nominal',
+    ];
+
+    protected $casts = [
+        'nominal' => Money::class,
     ];
 
     // Relations

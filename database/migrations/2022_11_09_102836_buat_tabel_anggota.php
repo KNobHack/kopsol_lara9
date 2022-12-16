@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('anggota', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained('users', 'id');
             $table->string('nik', 16)->unique();
             $table->string('nama_lengkap');
             $table->string('tempat_lahir');
@@ -29,8 +29,6 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('nomor_telpon', 15)->unique();
             $table->timestamps();
-
-            $table->foreign('user_id')->on('users')->references('id');
         });
     }
 
