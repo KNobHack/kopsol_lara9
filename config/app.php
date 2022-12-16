@@ -186,6 +186,7 @@ return [
          * Package Service Providers...
          */
         App\Providers\FortifyServiceProvider::class,
+        App\Providers\TenancyServiceProvider::class,
 
         /*
          * Application Service Providers...
