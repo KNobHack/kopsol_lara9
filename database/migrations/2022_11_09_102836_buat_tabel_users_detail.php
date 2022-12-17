@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_detail', function (Blueprint $table) {
+        Schema::create('users_detail', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id');
             $table->string('nik', 16)->nullable()->unique();
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::drop('user_detail');
+        Schema::drop('users_detail');
     }
 };

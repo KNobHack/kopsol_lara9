@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\ProfileController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\NonAnggotaController;
 use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\Transaksi;

@@ -24,7 +24,7 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:tenant_web')->group(function () {
 
         // Harus isi dulu profil
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
