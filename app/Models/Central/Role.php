@@ -23,6 +23,7 @@ class Role extends Model
 
     const ROLE = [
         'admin' => 1,
+        'user' => 2,
     ];
 
     // Relations

@@ -21,10 +21,10 @@
               </div>
 
               @if (session()->has('alert'))
-                @foreach (session('alert') as $bg => $message)
-                  <div class="card bg-{{ $bg }} text-white shadow my-4">
+                @foreach (session('alert') as $alert)
+                  <div class="card bg-{{ $alert['mode'] }} text-white shadow my-4">
                     <div class="card-body">
-                      {{ $message }}
+                      {{ $alert['message'] }}
                       <!-- <div class="text-white-50 small">#4e73df</div> -->
                     </div>
                   </div>
@@ -71,9 +71,9 @@
               <div class="text-center">
                 <a class="small" href="{{ route('password.request') }}">Lupa Password?</a>
               </div>
-              <div class="text-center">
+              {{-- <div class="text-center">
                 <a class="small" href="{{ route('register') }}">Buat Akun Baru</a>
-              </div>
+              </div> --}}
           </div>
         </div>
       </div>

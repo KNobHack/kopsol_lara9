@@ -14,7 +14,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // use HasApiTokens, HasFactory;
     use Notifiable;
 
-    const DefaultRoleId = '1'; // admin @todo should be changed
+    const DefaultRoleId = 2; // user
 
     /**
      * The attributes that are mass assignable.
@@ -49,11 +49,40 @@ class User extends Authenticatable implements MustVerifyEmail
     // Functions
 
     /**
+     * Apakah user sudah mengisi minimum profile
+     * @return bool
+     */
+    public function profileMinimum(): bool
+    {
+        $detail = $this->udetail;
+
+        if ($detail === null) {
+            return false;
+        }
+
+        return $detail->nama && $detail->jenis_kelamin;
+    }
+
+    /**
      * Apakah user sudah mengisi data dirinya?
      */
     public function profileComplete(): bool
     {
-        return $this->udetail !== null;
+        $detail = $this->udetail;
+
+        if ($detail === null) {
+            return false;
+        }
+
+        return $detail->nik &&
+            $detail->nama &&
+            $detail->tempat_lahir &&
+            $detail->tanggal_lahir &&
+            $detail->jenis_kelamin &&
+            $detail->agama &&
+            $detail->pekerjaan &&
+            $detail->alamat &&
+            $detail->nomor_telpon;
     }
 
     // Relations
@@ -63,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'role_id', 'id');
     }
 
-    public function udetail(): Relation
+    public function detail(): Relation
     {
         return $this->hasOne(UserDetail::class, 'user_id', 'id');
     }
